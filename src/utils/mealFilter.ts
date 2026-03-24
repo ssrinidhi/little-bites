@@ -4,7 +4,7 @@ import { RECIPES } from '../data/recipes'
 export function filterMeals(
   meals: Meal[],
   children: ChildProfile[],
-  preferences: FamilyPreferences,
+  _preferences: FamilyPreferences,
   slot: MealSlot,
   familyMealOnly = false,
 ): Meal[] {

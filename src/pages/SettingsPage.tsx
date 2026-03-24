@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { User, Utensils, RefreshCw, ChevronDown, ChevronUp, Check, AlertTriangle, Info, Plus, X, LogOut } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAppStore } from '../store/useAppStore'
 import { ALL_ALLERGENS, ALLERGEN_LABELS, ALLERGEN_EMOJIS } from '../constants/allergens'
@@ -20,9 +21,7 @@ const DIETARY_OPTIONS: { value: DietaryRestriction; label: string; emoji: string
 
 const COMMON_AVOID_FOODS = ['Strawberry', 'Citrus', 'Corn', 'Honey', 'Kiwi', 'Mango', 'Shellfish', 'Avocado']
 
-type IconComponent = (props: { size?: number; className?: string }) => JSX.Element | null
-
-function SectionHeader({ title, icon: Icon }: { title: string; icon: IconComponent }) {
+function SectionHeader({ title, icon: Icon }: { title: string; icon: LucideIcon }) {
   return (
     <div className="flex items-center gap-2 mb-3">
       <div className="w-7 h-7 rounded-lg bg-primary-100 flex items-center justify-center">
@@ -408,7 +407,7 @@ export default function SettingsPage() {
                       {[1, 2, 3, 4, 5].map((level) => (
                         <button
                           key={level}
-                          onClick={() => set(level)}
+                          onClick={() => set(level as EffortLevel)}
                           className={`flex-1 h-7 rounded-lg text-xs font-bold transition-all ${
                             value >= level ? 'bg-primary-400 text-white' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
                           }`}
