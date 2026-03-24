@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { AppState, ChildProfile, FamilyPreferences, WeekPlan, GroceryListItem } from '../types'
+import { saveUserData } from '../lib/syncStore'
 
 interface AppStore extends AppState {
   completeOnboarding: (children: ChildProfile[], preferences: FamilyPreferences) => void
@@ -10,6 +11,7 @@ interface AppStore extends AppState {
   toggleGroceryItem: (itemId: string) => void
   resetGroceryChecks: () => void
   resetApp: () => void
+  loadFromCloud: (data: Partial<AppState>) => void
 }
 
 const defaultPreferences: FamilyPreferences = {
@@ -38,22 +40,60 @@ const initialState: AppState = {
 
 export const useAppStore = create<AppStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
-      completeOnboarding: (children, preferences) =>
-        set({ isOnboarded: true, children, preferences }),
-      updateChildren: (children) => set({ children }),
-      updatePreferences: (preferences) => set({ preferences }),
-      setWeekPlan: (plan, groceryList) =>
-        set({ currentWeekPlan: plan, groceryList, checkedGroceryItems: [], planGeneratedAt: new Date().toISOString() }),
-      toggleGroceryItem: (itemId) =>
-        set((state) => ({
-          checkedGroceryItems: state.checkedGroceryItems.includes(itemId)
+
+      completeOnboarding: (children, preferences) => {
+        set({ isOnboarded: true, children, preferences })
+        saveUserData({ ...get(), isOnboarded: true, children, preferences })
+      },
+
+      updateChildren: (children) => {
+        set({ children })
+        saveUserData({ ...get(), children })
+      },
+
+      updatePreferences: (preferences) => {
+        set({ preferences })
+        saveUserData({ ...get(), preferences })
+      },
+
+      setWeekPlan: (plan, groceryList) => {
+        const planGeneratedAt = new Date().toISOString()
+        set({ currentWeekPlan: plan, groceryList, checkedGroceryItems: [], planGeneratedAt })
+        saveUserData({ ...get(), currentWeekPlan: plan, groceryList, checkedGroceryItems: [], planGeneratedAt })
+      },
+
+      toggleGroceryItem: (itemId) => {
+        set((state) => {
+          const checkedGroceryItems = state.checkedGroceryItems.includes(itemId)
             ? state.checkedGroceryItems.filter((id) => id !== itemId)
-            : [...state.checkedGroceryItems, itemId],
-        })),
-      resetGroceryChecks: () => set({ checkedGroceryItems: [] }),
-      resetApp: () => set(initialState),
+            : [...state.checkedGroceryItems, itemId]
+          return { checkedGroceryItems }
+        })
+        saveUserData({ ...get() })
+      },
+
+      resetGroceryChecks: () => {
+        set({ checkedGroceryItems: [] })
+        saveUserData({ ...get(), checkedGroceryItems: [] })
+      },
+
+      resetApp: () => {
+        set(initialState)
+        saveUserData(initialState)
+      },
+
+      loadFromCloud: (data) => {
+        set((state) => ({
+          ...state,
+          ...data,
+          // merge preferences carefully so defaults fill any missing keys
+          preferences: data.preferences
+            ? { ...state.preferences, ...data.preferences }
+            : state.preferences,
+        }))
+      },
     }),
     {
       name: 'little-bites-v2',
