@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npm install:*)",
+      "Read(//usr/local/bin/**)",
+      "Read(//Users/sne/.nvm/versions/**)",
+      "mcp__Claude_Preview__preview_start",
+      "Read(//Users/sne/**)",
+      "Bash(command -v node)",
+      "Bash(curl -fsSL https://fnm.vercel.app/install)",
+      "Bash(bash)",
+      "Bash(curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh)",
+      "Bash(/Users/sne/house_manager/public/favicon.svg:*)",
+      "Bash(ls /usr/local/bin/node /opt/homebrew/bin/node ~/.nvm/versions/node/*/bin/node)",
+      "Bash(echo \"PATH=$PATH\")",
+      "Bash(source ~/.zshrc)",
+      "Bash(source ~/.zprofile)",
+      "Bash(echo $SHELL)",
+      "Bash(echo $PATH)",
+      "Bash(command -v npm)",
+      "Bash(command -v npx)",
+      "Bash(brew --prefix)",
+      "Bash(source ~/.nvm/nvm.sh)",
+      "Bash(nvm --version)",
+      "Bash(nvm ls:*)",
+      "Bash(nvm install:*)",
+      "Bash(/Users/sne/house_manager/dev.sh:*)",
+      "Bash(chmod +x /Users/sne/house_manager/dev.sh)",
+      "Bash(gh auth:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
